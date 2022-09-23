@@ -1,24 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import './index.css';
+import { User } from './ApiInterfaces';
+import UserCard from './UserCard';
 
 function App() {
+  const [usersArray, setUsersArray] = useState<User[]>([])
+
+  const getUsersData = async () =>{
+    try{
+      const response = await axios.get('https://dummyjson.com/users')
+      setUsersArray(response.data.users)
+    }
+    catch (err){
+      console.log(err)
+    }
+  }
+
+  useEffect(()=>{
+    getUsersData()
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>
+        {usersArray.map((user)=>(
+          <p key={user.id}>{user.firstName} {user.lastName}</p>
+        ))}
+      </div>
     </div>
   );
 }
